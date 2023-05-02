@@ -6,14 +6,47 @@ kubectl create namespace vault
 helm repo add hashicorp https://helm.releases.hashicorp.com
 helm search repo hashicorp/vault
 helm search repo hashicorp/vault --versions
-helm install vault hashicorp/vault --namespace vault --version 0.23.0
+helm install vault hashicorp/vault \
+    --set "server.dev.enabled=true" \
+    --set "injector.enabled=false" \
+    --set "csi.enabled=true"
 ```
-## edit service to nodeport
+## exec into the pod
 ```
-kubectl edit svc -n vault vault-internal
+kubectl exec -it vault-0 -- /bin/sh
 ```
 
-## Create the KV store and secret from the Vault UI
+## Create the KV store and secret from the Vault UI or CLI 
+```
+vault kv put secret/my-pass password="kubernetes"
+vault kv get secret/my-pass
+```
+## Enable Kubernetes Authentication
+```
+vault auth enable kubernetes
+vault write auth/kubernetes/config kubernetes_host="https://212.2.244.66:6443"
+
+```
+## Create a policy
+vault policy write read-only - <<EOF
+path "secret/data/my-pass" {
+  capabilities = ["read"]
+}
+EOF
+
+## Binding policy with Kubernetes SA
+```
+vault write auth/kubernetes/role/mysecret \
+    bound_service_account_names=secret-sa \
+    bound_service_account_namespaces=default \
+    policies=read-only \
+    ttl=20m
+```
+
+## Create service account 
+```
+kubectl create serviceaccount secret-sa
+```
 
 ## Install csi-secret-store
 ```
