@@ -6,7 +6,7 @@ kubectl create namespace vault
 helm repo add hashicorp https://helm.releases.hashicorp.com
 helm search repo hashicorp/vault
 helm search repo hashicorp/vault --versions
-helm install vault hashicorp/vault --namespace vault --version 0.5.0
+helm install vault hashicorp/vault --namespace vault --version 0.23.0
 ```
 ## edit service to nodeport
 ```
