@@ -28,12 +28,13 @@ vault write auth/kubernetes/config kubernetes_host="https://212.2.244.66:6443"
 
 ```
 ## Create a policy
+```
 vault policy write read-only - <<EOF
 path "secret/data/my-pass" {
   capabilities = ["read"]
 }
 EOF
-
+```
 ## Binding policy with Kubernetes SA
 ```
 vault write auth/kubernetes/role/mysecret \
