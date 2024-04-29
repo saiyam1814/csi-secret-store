@@ -23,7 +23,7 @@ vault kv get secret/my-pass
 ## Enable Kubernetes Authentication
 ```
 vault auth enable kubernetes
-vault write auth/kubernetes/config kubernetes_host="https://212.2.244.66:6443"
+vault write auth/kubernetes/config kubernetes_host="https://172.30.1.2:6443" // this is for Killercoda
 
 ```
 ## Create a policy
@@ -53,6 +53,13 @@ kubectl create serviceaccount secret-sa
 helm repo add secrets-store-csi-driver https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
 helm install csi-secrets-store secrets-store-csi-driver/secrets-store-csi-driver --namespace kube-system
 ```
+## Create the secret provider class
+kubectl apply -f secretproviderclass
+
+## create the pod 
+kubectl apply -f pod.yaml
+
+
 ## [Customize installation](https://github.com/kubernetes-sigs/secrets-store-csi-driver/tree/main/charts/secrets-store-csi-driver#configuration)
 ```
 enableSecretRotation	Enable secret rotation feature [alpha]	false
